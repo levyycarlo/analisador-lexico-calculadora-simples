@@ -1,0 +1,17 @@
+iniciar_jogo
+
+jogador1 passa para jogador2
+jogador2 chuta
+se_der gol jogador2
+    narrar("Gol do jogador2!")
+se_não
+    narrar("Jogador2 errou o gol")
+
+jogador2 passa para jogador1
+jogador1 chuta
+se_der gol jogador1
+    narrar("Gol do jogador1!")
+se_não
+    narrar("Jogador1 errou o gol")
+
+fim_de_jogo

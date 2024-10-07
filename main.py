@@ -1,35 +1,35 @@
-from lexer import Lexer  # Importa a classe Lexer do módulo lexer, responsável por analisar o texto.
-import sys  # Importa o módulo sys para manipulação do sistema, como captura de erros.
+import sys
+from lexer import Lexer
+
+def imprimir_cabecalho():
+    print("| %-15s | %-25s | %-5s |" % ("Lexema", "Token", "Linha"))
+    print("|-----------------|-----------------|-------|")
+
+def imprimir_token(token):
+    # Ajustando a formatação para garantir alinhamento
+    print("| %-15s | %-20s | %-5d |" % (token.valor.ljust(15), token.tipo.ljust(20), token.linha))
 
 def main():
-    # Loop infinito para permitir a entrada contínua de expressões pelo usuário.
-    while True:
-        try:
-            text = input("calc > ")  # Solicita ao usuário que insira uma expressão matemática.
-            
-            # Verifica se a entrada do usuário é uma string vazia.
-            
-            if text.strip() == "":
-                continue  # Se a entrada for vazia, continua para a próxima iteração do loop.
+    if len(sys.argv) < 2:
+        print("Uso: python main.py <nome_do_arquivo>")
+        return
 
-            # Cria uma nova instância do Lexer com o texto inserido pelo usuário.
-            lexer = Lexer(text)  
-            
-            # Chama o método obter_tokens do lexer para analisar o texto e obter a lista de tokens.
-            tokens = lexer.obter_tokens()  
+    nome_arquivo = sys.argv[1]
 
-            # Itera sobre a lista de tokens gerados.
-            for token in tokens:  
-                print(token)  # Imprime cada token no console.
+    try:
+        with open(nome_arquivo, 'r', encoding='utf-8') as arquivo:  # Especificando a codificação UTF-8
+            texto = arquivo.read()  # Lê o conteúdo do arquivo
+            lexer = Lexer(texto)  # Cria uma instância do Lexer
+            tokens = lexer.obter_tokens()  # Obtém os tokens
 
-        # Captura um erro específico de execução (RuntimeError) e imprime a mensagem de erro.
-        except RuntimeError as e:  
-            print(f"error: {e.args[0]}", file=sys.stderr)  # Exibe a mensagem de erro no console de erros padrão.
-        
-        # Captura qualquer outro erro inesperado e imprime uma mensagem de erro genérica.
-        except Exception as e:  
-            print(f"Unexpected error: {e}", file=sys.stderr)  # Exibe a mensagem de erro genérica.
+            imprimir_cabecalho()  # Imprime o cabeçalho da tabela
+            for token in tokens:  # Itera sobre os tokens
+                imprimir_token(token)  # Passa o objeto token para a função
 
-# Verifica se o script está sendo executado diretamente (não importado como módulo).
-if __name__ == "__main__":  
-    main()  # Chama a função main para iniciar o programa.
+    except FileNotFoundError:
+        print(f"Erro: O arquivo '{nome_arquivo}' não foi encontrado.")
+    except Exception as e:
+        print(f"Erro: {e}")
+
+if __name__ == "__main__":
+    main()
